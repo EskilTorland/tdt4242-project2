@@ -4,7 +4,7 @@ const chance = new Chance(); */
 
 var baseUrl = "localhost:9090";
 
-describe('My First Test', () => {
+describe('Boundary tests for view/edit exercise page', () => {
   beforeEach(() => {
     loginUser();
     cy.visit(baseUrl+"/exercise.html");
