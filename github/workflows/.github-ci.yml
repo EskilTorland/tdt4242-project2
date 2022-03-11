@@ -1,25 +1,32 @@
-stages:
-    - test
-    - staging
-  
-test:
-  image: python:3.8
-  stage: test
-  script:
-  # this configures Django application to use attached postgres database that is run on `postgres` host
-    - cd backend/secfit
-    - apt-get update -qy
-    - pip install -r requirements.txt
+name: Run CI
 
-staging:
-  type: deploy
-  image: ruby
-  stage: staging
-  script:
-    - apt-get update -qy
-    - apt-get install -y ruby-dev
-    - gem install dpl
-    - dpl --provider=heroku --app=tdt4242-g01-frontend --api-key=$HEROKU_STAGING_API_KEY
-    - dpl --provider=heroku --app=tdt4242-g01-backend --api-key=$HEROKU_STAGING_API_KEY
-  only:
-    - master
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+steps:
+    - name: Install Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16.4
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Fetch required Go modules
+      run:  go mod download
+
+    - name: Build
+      run:  go build -v ./...
+
+    - name: Build Docker image
+      uses: docker/build-push-action@v2
+      with:
+        push: false
+        tags: ${{ github.event.repository.name }}:latest, ${{ github.repository }}:latest
+
+    - name: Run functional tests
+      run:  go test -v ./...
