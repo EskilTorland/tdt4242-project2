@@ -7,7 +7,7 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-steps:
+    steps:
     - name: Install Go
       uses: actions/setup-go@v2
       with:
@@ -29,4 +29,4 @@ steps:
         tags: ${{ github.event.repository.name }}:latest, ${{ github.repository }}:latest
 
     - name: Run functional tests
-      run:  go test -v ./...
+      run:  python manage.py test
