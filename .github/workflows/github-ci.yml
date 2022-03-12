@@ -30,3 +30,12 @@ jobs:
 
     - name: Run functional tests
       run:  python manage.py test
+
+
+
+    - uses: actions/checkout@v2
+    - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+      with:
+        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+        heroku_app_name: "tdt4242-g01-frontend" #Must be unique in Heroku
+        heroku_email: "eskil.torland@gmail.com"
