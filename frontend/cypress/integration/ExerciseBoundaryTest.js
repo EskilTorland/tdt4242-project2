@@ -41,7 +41,7 @@ describe('Boundary tests for view/edit exercise page', () => {
     cy.get('input[name="password"]').type("password1");
     cy.get('input[name="password1"]').type("password1");
     cy.get('#btn-create-account').click();
-    cy.wait(1500);
+    cy.wait(1000);
     cy.get('#btn-logout', { timeout: 10000 }).click()
   }
 
@@ -50,6 +50,6 @@ describe('Boundary tests for view/edit exercise page', () => {
     cy.get('input[name="username"]').type("user1");
     cy.get('input[name="password"]').type("password1");
     cy.get('#btn-login').click()
-    cy.wait(1500)
+    cy.wait(1000)
   }
 })

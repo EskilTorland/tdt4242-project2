@@ -36,7 +36,7 @@ describe('Boundary tests for register page', ()=>{
             chance.city(),
             chance.address()
         )
-        cy.wait(1500)
+        cy.wait(1000)
         
         cy.visit(baseUrl+'/register.html');
     
