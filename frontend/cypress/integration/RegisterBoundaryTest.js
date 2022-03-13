@@ -22,6 +22,18 @@ describe('Boundary tests for register page', ()=>{
         cy.get('[role=alert]').should('be.visible');
     })
 
+    // Couldnt use the RegisterUser function since cypress.type() cant contain empty string.
+    it('Alert should be visible if no password is set', ()=>{
+        cy.get('[name=username]').type(chance.word({length: 10}));
+        cy.get('[name=email]').type(chance.email());
+        cy.get('[name=phone_number]').type(chance.phone());
+        cy.get('[name=country]').type(chance.country());
+        cy.get('[name=city]').type(chance.city());
+        cy.get('[name=street_address]').type(chance.address());
+        cy.get('#btn-create-account').click();
+        cy.get('[role=alert]').should('be.visible');
+    })
+
     it('Check for alert if username already in database', ()=>{
         // set random username to test.
         var username = chance.word({length: 8})
