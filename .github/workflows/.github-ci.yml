@@ -1,25 +1,27 @@
-stages:
-    - test
-    - staging
-  
-test:
-  image: python:3.8
-  stage: test
-  script:
-  # this configures Django application to use attached postgres database that is run on `postgres` host
-    - cd backend/secfit
-    - apt-get update -qy
-    - pip install -r requirements.txt
+name: Deploy
 
-staging:
-  type: deploy
-  image: ruby
-  stage: staging
-  script:
-    - apt-get update -qy
-    - apt-get install -y ruby-dev
-    - gem install dpl
-    - dpl --provider=heroku --app=tdt4242-g01-frontend --api-key=$HEROKU_STAGING_API_KEY
-    - dpl --provider=heroku --app=tdt4242-g01-backend --api-key=$HEROKU_STAGING_API_KEY
-  only:
-    - master
+on: 
+  push:
+    branches: [master]
+
+jobs: 
+  deploy:
+    name: Deploy to heroku
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.6'
+      - run: |
+          sudo apt-get upgrade -qy
+      - run: pip install -r requirements.txt 
+        working-directory: ./backend/secfit
+      - run: |
+        sudo apt-get install -y ruby-dev
+        gem install dpl
+        dpl --provider=heroku --app=tdt4242-g01-frontend --api-key=${{ secrets.HEROKU_STAGING_API_KEY}}
+        dpl --provider=heroku --app=tdt4242-g01-backend --api-key=${{ secrets.HEROKU_STAGING_API_KEY}}        
