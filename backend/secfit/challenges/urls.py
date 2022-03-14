@@ -9,6 +9,6 @@ from rest_framework_simplejwt.views import (
 # This is messy and should be refactored
 urlpatterns = format_suffix_patterns(
     [
-        path("api/challenge", views.ChallengeList.as_view(), name="challenge-list")
+        path("api/challenge/", views.ChallengeList.as_view(), name="challenge-list")
     ]
 )
