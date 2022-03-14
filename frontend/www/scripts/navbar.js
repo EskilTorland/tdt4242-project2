@@ -22,9 +22,12 @@ class NavBar extends HTMLElement {
                 <hr>
             </div>
             <div class="my-2 my-lg-0 me-5">
-                <a role="button" class="btn btn-primary hide" id="btn-register" href="register.html">Register</a>
+                <a role="button" class="btn btn-primary" id="btn-register" href="register.html">Register</a>
                 <a role="button" class="btn btn-secondary hide" id="btn-login-nav" href="login.html">Log in</a>
                 <a role="button" class="btn btn-secondary hide" id="btn-logout" href="logout.html">Log out</a>
+                <a role="button" class="btn btn-secondary hide" id="btn-logout" href="profile.html">
+                <img src="profile.png"/>
+                </a>
             </div>
             </div>
         </div>
