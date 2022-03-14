@@ -19,14 +19,15 @@ class NavBar extends HTMLElement {
                 <a class="nav-link hide" id="nav-mycoach" href="mycoach.html">Coach</a>
                 <a class="nav-link hide" id="nav-myathletes" href="myathletes.html">Athletes</a>
                 <a class="nav-link hide" id="nav-meals" href="meals.html">Meal registration</a>
+                <a class="nav-link hide" id="nav-challenges" href="challenges.html">Challenges</a>
                 <hr>
             </div>
             <div class="my-2 my-lg-0 me-5">
-                <a role="button" class="btn btn-primary" id="btn-register" href="register.html">Register</a>
+                <a role="button" class="btn btn-primary hide" id="btn-register" href="register.html">Register</a>
                 <a role="button" class="btn btn-secondary hide" id="btn-login-nav" href="login.html">Log in</a>
                 <a role="button" class="btn btn-secondary hide" id="btn-logout" href="logout.html">Log out</a>
-                <a role="button" class="btn btn-secondary hide" id="btn-logout" href="profile.html">
-                <img src="profile.png"/>
+                <a role="button" class="btn btn-secondary hide" id="btn-profile" href="profile.html">
+                <img src="/frontend/www/img/profile.png" alt="Profile">
                 </a>
             </div>
             </div>
