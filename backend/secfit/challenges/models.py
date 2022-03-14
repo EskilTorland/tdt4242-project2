@@ -42,9 +42,6 @@ class Challenge(models.Model):
     end_date = models.DateTimeField()
     description = models.TextField()
 
-    class Meta:
-        ordering = ["-start_date"]
-
     def __str__(self):
         return self.name
 
