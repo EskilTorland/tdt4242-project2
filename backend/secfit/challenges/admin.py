@@ -3,7 +3,6 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Meal, MealFile
+from .models import Challenge
 
-admin.site.register(Meal)
-admin.site.register(MealFile)
+admin.site.register(Challenge)
