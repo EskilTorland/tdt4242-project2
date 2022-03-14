@@ -27,7 +27,7 @@ class NavBar extends HTMLElement {
                 <a role="button" class="btn btn-secondary hide" id="btn-login-nav" href="login.html">Log in</a>
                 <a role="button" class="btn btn-secondary hide" id="btn-logout" href="logout.html">Log out</a>
                 <a role="button" class="btn btn-secondary hide" id="btn-profile" href="profile.html">
-                <img src="/frontend/www/img/profile.png" alt="Profile">
+                <img src="../img/profile.png" alt="Profile" width="24" height="24">
                 </a>
             </div>
             </div>
