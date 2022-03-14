@@ -123,3 +123,24 @@
   margin: 0 auto;
   width: 375px;
 }
+
+.challenge-card{
+  margin: 20px auto;
+  height: 375px;
+  width: 250px;
+  border-radius: 20px;
+}
+
+.challenge-wrapper{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 400px 100px;
+}
+
+@media screen and (max-width:1200px) {
+  .challenge-wrapper{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 400px 100px;
+  }
+}
