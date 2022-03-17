@@ -28,6 +28,7 @@ function updateNavBar() {
 
   if (isUserAuthenticated()) {
     document.getElementById("btn-logout").classList.remove("hide");
+    document.getElementById("btn-profile").classList.remove("hide");
 
     document.querySelector('a[href="logout.html"').classList.remove("hide");
     document.querySelector('a[href="workouts.html"').classList.remove("hide");
@@ -35,6 +36,7 @@ function updateNavBar() {
     document.querySelector('a[href="exercises.html"').classList.remove("hide");
     document.querySelector('a[href="myathletes.html"').classList.remove("hide");
     document.querySelector('a[href="meals.html"').classList.remove("hide");
+    document.querySelector('a[href="challenges.html"').classList.remove("hide");
   } else {
     document.getElementById("btn-login-nav").classList.remove("hide");
     document.getElementById("btn-register").classList.remove("hide");
