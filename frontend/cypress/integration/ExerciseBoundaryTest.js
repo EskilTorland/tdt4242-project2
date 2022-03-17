@@ -5,14 +5,15 @@ const chance = new Chance(); */
 var baseUrl = "localhost:9090";
 
 describe('Boundary tests for view/edit exercise page', () => {
-  beforeEach(() => {
-    loginUser();
-    cy.visit(baseUrl+"/exercise.html");
+
+  before(() => {
+    // cy.RegisterDummyUser();
   })
 
-/*     it('Check Required Fields', () => {
-    cy.get("#inputName").should("have.attr", "readonly");
-  }) */
+  beforeEach(() => {
+    cy.LoginDummyUser();
+    cy.visit(baseUrl+"/exercise.html");
+  })
 
   it('Check negative values for Duration', () => {
     insertValues("Leg Press", "Bla Bla Bla", "Reps", "-30", "50");
@@ -26,30 +27,51 @@ describe('Boundary tests for view/edit exercise page', () => {
     cy.url().should("include", "/exercises.html");
   })
 
+  it('Check for alert when name is empty', () => {
+    insertValues(null, "Bla Bla Bla", "Reps", "30", "30");
+    cy.get("#btn-ok-exercise").click();
+    cy.get('[role=alert]').should('be.visible');
+  })
+
+  it('Check for alert when description is empty', () => {
+    insertValues("Workout 1", null, "Reps", "30", "50");
+    cy.get("#btn-ok-exercise").click();
+    cy.get('[role=alert]').should('be.visible');
+  })
+
+  it('Check for alert when unit is empty', () => {
+    insertValues("Workout 1", "bla bla", null, "30", "50");
+    cy.get("#btn-ok-exercise").click();
+    cy.get('[role=alert]').should('be.visible');
+  })
+
+  it('Check for alert when duration is empty', () => {
+    insertValues("Workout 1", "bla bla", "Reps", null, "50");
+    cy.get("#btn-ok-exercise").click();
+    cy.get('[role=alert]').should('be.visible');
+  })
+
+  it('Check for alert when calories is empty', () => {
+    insertValues("Workout 1", "bla bla", "Reps", "30", null);
+    cy.get("#btn-ok-exercise").click();
+    cy.get('[role=alert]').should('be.visible');
+  })
+
   function insertValues(name, description, unit, duration, calories) {
-    cy.get('#inputName').type(name);
-    cy.get('#inputDescription').type(description);
-    cy.get('#inputUnit').type(unit);
-    cy.get('#inputDuration').type(duration);
-    cy.get('#inputCalories').type(calories);
-  }
-
-  function registerUser(){
-    cy.visit(baseUrl+"/register.html");
-    cy.get('input[name="username"]').type("user1");
-    cy.get('input[name="email"]').type("user1@test.com");
-    cy.get('input[name="password"]').type("password1");
-    cy.get('input[name="password1"]').type("password1");
-    cy.get('#btn-create-account').click();
-    cy.wait(1000);
-    cy.get('#btn-logout', { timeout: 10000 }).click()
-  }
-
-  function loginUser(){
-    cy.visit(baseUrl+"/login.html");
-    cy.get('input[name="username"]').type("user1");
-    cy.get('input[name="password"]').type("password1");
-    cy.get('#btn-login').click()
-    cy.wait(1000)
+    if(name != null){
+      cy.get('#inputName').type(name);
+    }
+    if(description != null){
+      cy.get('#inputDescription').type(description);
+    }
+    if(unit != null){
+      cy.get('#inputUnit').type(unit);
+    }
+    if(duration != null){
+      cy.get('#inputDuration').type(duration);
+    }
+    if(calories != null){
+      cy.get('#inputCalories').type(calories);
+    }
   }
 })
