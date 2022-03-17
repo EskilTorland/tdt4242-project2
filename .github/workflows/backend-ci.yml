@@ -1,0 +1,35 @@
+name: run tests
+
+on:
+  push:
+    #branches:
+
+jobs:
+  test:
+      runs-on: ubuntu-latest
+      services:
+        postgres:
+          image: postgres
+          #env:
+      
+      steps:
+        - name: checkout branch
+          uses: actions/checkout@v2
+        
+        - name: Setup python
+          uses: actions/setup-python@v2
+          with:
+            python-version: '3.8'
+        
+        - name: Install dependencies
+          run: pip install -r requirements.txt
+          working-directory: ./backend/secfit
+        - name: Make migrations
+          run: |
+            python manage.py makemigrations
+            python manage.py migrate --run-syncd
+          working-directory: ./backend/secfit
+        - name: Run tests
+          #env:
+          run: python manage.py test
+          working-directory: ./backend/secfit
