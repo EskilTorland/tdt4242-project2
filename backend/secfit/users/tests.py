@@ -1,6 +1,5 @@
 from django.test import TestCase, RequestFactory
 from users.serializers import UserSerializer
-from chance import chance
 
 # Create your tests here.
 
