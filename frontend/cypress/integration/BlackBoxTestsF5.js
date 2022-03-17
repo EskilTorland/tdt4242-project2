@@ -1,39 +1,40 @@
-const { describe } = require("mocha");
-
 var baseUrl = "localhost:9090";
 
 describe('Black box tests for Functional Requirements 5', () =>{
-    before(()=>{
-        registerUser();
+
+    before(() => {
+      // cy.RegisterDummyUser();
     })
 
-    beforeEach(() => {
-        loginUser();
-        cy.visit(baseUrl+"/workouts.html");
-      })
-
-    it('Check negative values for Duration', () => {
-    insertValues("Leg Press", "Bla Bla Bla", "Reps", "-30", "50");
-    cy.get("#btn-ok-exercise").click();
-    cy.url().should("include", "/exercises.html");
+    beforeEach(()=>{
+      cy.LoginDummyUser();
+      cy.visit(baseUrl+"/workouts.html");
     })
 
-    function registerUser(){
-        cy.visit(baseUrl+"/register.html");
-        cy.get('input[name="username"]').type("user1");
-        cy.get('input[name="email"]').type("user1@test.com");
-        cy.get('input[name="password"]').type("password1");
-        cy.get('input[name="password1"]').type("password1");
-        cy.get('#btn-create-account').click();
-        cy.wait(1000);
-        cy.get('#btn-logout', { timeout: 10000 }).click()
-      }
-    
-      function loginUser(){
-        cy.visit(baseUrl+"/login.html");
-        cy.get('input[name="username"]').type("user1");
-        cy.get('input[name="password"]').type("password1");
-        cy.get('#btn-login').click()
-        cy.wait(1000)
+    it('Athlete should see workout in "All Workout" list after logging public workout', () => {
+        logPublicWorkout();
+        cy.url().should('include', "/workouts.html");
+        cy.get('h5').contains('Workout test')
+    })
+
+    it('Athlete should see workout in "My Workout" list after logging workout', () => {
+      cy.get('#list-my-workouts-list').click();
+      cy.get('h5').contains('Workout test');
+    })
+
+    it('Athlete should see workout in "Public Workout" list after logging public workout', () => {
+      cy.get('#list-public-workouts-list').click();
+      cy.get('h5').contains('Workout test');
+    })
+
+      function logPublicWorkout(){
+        cy.get("#btn-create-workout").click();
+        cy.get('input[name="name"]').type("Workout test");
+        cy.get('input[name="date"]').click().then(input => {
+            input[0].dispatchEvent(new Event('input', { bubbles: true }))
+            input.val('2022-04-30T13:00')
+          }).click()
+        cy.get('#inputNotes').type('BlaBlaBla')
+        cy.get("#btn-ok-workout").click();
       }
 })

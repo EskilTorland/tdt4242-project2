@@ -22,6 +22,21 @@ describe('Boundary tests for register page', ()=>{
         cy.get('[role=alert]').should('be.visible');
     })
 
+    it('Check for alert if email is wrong format', ()=>{
+        var password = chance.word({length: 10})
+        registerUser(
+            chance.word({length: 10}),
+            "email",
+            password,
+            chance.phone(),
+            chance.country(),
+            chance.city(),
+            chance.address()
+        )
+        cy.get('[role=alert]').should('be.visible');
+    })
+
+
     // Couldnt use the RegisterUser function since cypress.type() cant contain empty string.
     it('Check for alert if password field is empty', ()=>{
         cy.get('[name=username]').type(chance.word({length: 10}));
