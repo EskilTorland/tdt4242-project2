@@ -10,8 +10,13 @@ jobs:
       services:
         postgres:
           image: postgres
-          #env:
-      
+          env:
+            POSTGRES_DB: 'test-db'
+            POSTGRES_USER: 'test-db-user'
+            POSTGRES_PASSWORD: 'test-db-password'
+            DB_PORT: '5432'
+            DB_HOST: 'postgres'    
+    
       steps:
         - name: checkout branch
           uses: actions/checkout@v2
@@ -30,6 +35,11 @@ jobs:
             python manage.py migrate --run-syncd
           working-directory: ./backend/secfit
         - name: Run tests
-          #env:
+          env:
+            POSTGRES_DB: 'test-db'
+            POSTGRES_USER: 'test-db-user'
+            POSTGRES_PASSWORD: 'test-db-password'
+            DB_PORT: '5432'
+            DB_HOST: 'postgres'
           run: python manage.py test
           working-directory: ./backend/secfit
