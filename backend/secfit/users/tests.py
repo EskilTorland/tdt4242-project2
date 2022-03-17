@@ -1,5 +1,6 @@
 from django.test import TestCase, RequestFactory
 from users.serializers import UserSerializer
+from rest_framework import serializers
 
 # Create your tests here.
 
@@ -16,7 +17,7 @@ class UserSerializerTest(TestCase):
         password = 'password123'
         serializer = UserSerializer(data ={'password123':password,'password':'nomatch'})
 
-        self.assertRaises(serializer.ValidationError,serializer.validate_password,password)
+        self.assertRaises(serializers.ValidationError,serializer.validate_password,password)
 
     def test_user_create(self):
         data = {
