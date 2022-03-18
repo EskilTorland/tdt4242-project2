@@ -10,7 +10,7 @@ describe('Boundary tests for register page', ()=>{
     })
     it('Check for alert if username over 150 characters', ()=>{
         var password = chance.word({length: 10})
-        registerUser(
+        cy.registerUser(
             chance.word({length: 160}),
             chance.email(),
             password,
@@ -24,7 +24,7 @@ describe('Boundary tests for register page', ()=>{
 
     it('Check for alert if email is wrong format', ()=>{
         var password = chance.word({length: 10})
-        registerUser(
+        cy.registerUser(
             chance.word({length: 10}),
             "email",
             password,
@@ -54,7 +54,7 @@ describe('Boundary tests for register page', ()=>{
         var username = chance.word({length: 8})
         var password = chance.word({length: 10})
         // Add first user with username 
-        registerUser(
+        cy.registerUser(
             username,
             chance.email(),
             password,
@@ -68,7 +68,7 @@ describe('Boundary tests for register page', ()=>{
         cy.visit(baseUrl+'/register.html');
     
         // Add second user with username 
-        registerUser(
+        cy.registerUser(
             username,
             chance.email(),
             password,
@@ -79,26 +79,4 @@ describe('Boundary tests for register page', ()=>{
         )
         cy.get('[role=alert]').should('be.visible');
     })
-    
-    /**
-     * Register a new user to the database
-     * @param {*} username to add 
-     * @param {*} email to add 
-     * @param {*} password to add
-     * @param {*} phone to add
-     * @param {*} country to add
-     * @param {*} city to add
-     * @param {*} address to add
-     */
-    function registerUser(username, email, password, phone, country, city, address){
-        cy.get('[name=username]').type(username);
-        cy.get('[name=email]').type(email);
-        cy.get('[name=password]').type(password);
-        cy.get('[name=password1]').type(password);
-        cy.get('[name=phone_number]').type(phone);
-        cy.get('[name=country]').type(country);
-        cy.get('[name=city]').type(city);
-        cy.get('[name=street_address]').type(address);
-        cy.get('#btn-create-account').click();
-    }
 })

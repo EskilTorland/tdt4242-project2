@@ -55,3 +55,36 @@ Cypress.Commands.add('LoginDummyUser', () => {
     cy.get('#btn-login').click()
     cy.wait(1000)
 })
+
+/**
+ * Register a new user to the database
+ * @param {*} username to add 
+ * @param {*} email to add 
+ * @param {*} password to add
+ * @param {*} phone to add
+ * @param {*} country to add
+ * @param {*} city to add
+ * @param {*} address to add
+ */
+Cypress.Commands.add('registerUser', (username, email, password, phone, country, city, address) => {
+    cy.get('[name=username]').type(username);
+    cy.get('[name=email]').type(email);
+    cy.get('[name=password]').type(password);
+    cy.get('[name=password1]').type(password);
+    cy.get('[name=phone_number]').type(phone);
+    cy.get('[name=country]').type(country);
+    cy.get('[name=city]').type(city);
+    cy.get('[name=street_address]').type(address);
+    cy.get('#btn-create-account').click();
+})
+
+/**
+ * Login the dummy user
+ */
+ Cypress.Commands.add('loginUser', (username, password) => {
+    cy.visit(baseUrl+"/login.html");
+    cy.get('input[name="username"]').type(username);
+    cy.get('input[name="password"]').type(password);
+    cy.get('#btn-login').click()
+    cy.wait(1000)
+})
