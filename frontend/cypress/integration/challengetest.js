@@ -1,15 +1,15 @@
 var baseUrl = "localhost:9090";
 
 describe('Boundary tests for view/edit exercise page', () => {
-    before(() => {
-        // cy.RegisterDummyUser();
-      })
+  before(() => {
+      // cy.RegisterDummyUser();
+    })
 
-    beforeEach(() => {
-        cy.LoginDummyUser();
-        cy.wait(500);
-        cy.visit(baseUrl+"/index.html");
-        })
+  beforeEach(() => {
+      cy.LoginDummyUser();
+      cy.wait(500);
+      cy.visit(baseUrl+"/index.html");
+      })
 
   it('Check that challenges tab is not visible when user is not logged in', () => {
     cy.get('#btn-logout').click();
