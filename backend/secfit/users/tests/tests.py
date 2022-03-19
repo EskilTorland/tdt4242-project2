@@ -6,28 +6,29 @@ from rest_framework import serializers
 
 class UserSerializerTest(TestCase):
 
-    def test_validate_password(self):
-        password = 'password123'
-        serializer = UserSerializer(data ={'password123':password,'password':password})
+    def setUp(self):
+        self.password = 'hunter2isthestrongestpassword'
 
-        validated_password = serializer.validate_password(password)
-        self.assertEqual(validated_password,password)
+    def test_validate_password(self):
+        serializer = UserSerializer(data ={'password':self.password,'password1':self.password})
+
+        validated_password = serializer.validate_password(self.password)
+        self.assertEqual(validated_password,self.password)
     
     def test_validate_password_fail(self):
-        password = 'password123'
-        serializer = UserSerializer(data ={'password123':password,'password':'nomatch'})
+        serializer = UserSerializer(data ={'password':self.password,'password1':'wrongpassword'})
 
-        self.assertRaises(serializers.ValidationError,serializer.validate_password,password)
+        self.assertRaises(serializers.ValidationError,serializer.validate_password,self.password)
 
     def test_user_create(self):
         data = {
             'username' : 'John Doe',
             'email':'test@gmail.com',
-            'password' : 'hunter2',
+            'password' : self.password,
             'phone_number': 12121212,
             'country': 'Sweden',
             'city' : 'Stockholm',
-            'address' : 'Tre kronor' 
+            'street_address' : 'Tre kronor' 
         }
 
         serializer = UserSerializer(data = data)
@@ -38,6 +39,6 @@ class UserSerializerTest(TestCase):
         self.assertEqual(test_user.phone_number,data['phone_number'])
         self.assertEqual(test_user.country,data['country'])
         self.assertEqual(test_user.city,data['city'])
-        self.assertEqual(test_user.address,data['address'])
+        self.assertEqual(test_user.street_address,data['street_address'])
         
 
