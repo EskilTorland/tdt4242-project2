@@ -7,7 +7,7 @@ var baseUrl = "localhost:9090";
 describe('Boundary tests for view/edit exercise page', () => {
 
   before(() => {
-    // cy.RegisterDummyUser();
+    cy.RegisterDummyUser();
   })
 
   beforeEach(() => {
@@ -15,16 +15,16 @@ describe('Boundary tests for view/edit exercise page', () => {
     cy.visit(baseUrl+"/exercise.html");
   })
 
-  it('Check negative values for Duration', () => {
+  it('Check for alert if negative values for Duration', () => {
     insertValues("Leg Press", "Bla Bla Bla", "Reps", "-30", "50");
     cy.get("#btn-ok-exercise").click();
-    cy.url().should("include", "/exercises.html");
+    cy.get('[role=alert]').should('be.visible');
   })
 
-  it('Check negative values for Calories Burned', () => {
+  it('Check for alert if negative values for Calories Burned', () => {
     insertValues("Leg Press", "Bla Bla Bla", "Reps", "30", "-50");
     cy.get("#btn-ok-exercise").click();
-    cy.url().should("include", "/exercises.html");
+    cy.get('[role=alert]').should('be.visible');
   })
 
   it('Check for alert when name is empty', () => {
