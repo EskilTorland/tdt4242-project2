@@ -1,0 +1,15 @@
+name: AU
+
+on: 
+  push:
+    branches: [master]
+
+jobs:
+  semgrep:
+    name: Run semgrep scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: returntocorp/semgrep-action@v1
+        env:
+          SEMGREP_RULES: .semgrep/

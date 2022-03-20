@@ -1,0 +1,20 @@
+rules:
+- id: apu-coverage
+  patterns:
+  - pattern-either: 
+    - pattern: if ($PREDICATE)
+  - pattern-inside: function retrieveWorkoutImages(...){...}
+  message: "APU found"
+  languages: [js]
+  severity: INFO
+- id: acu-coverage
+  patterns: 
+  - pattern-either: 
+    - pattern: $X - $Y 
+    - pattern: $X + $Y
+    - pattern: $X * $Y
+    - pattern: $X / $Y
+  - pattern-inside: function retrieveWorkoutImages(...){...}
+  message: "ACU found"
+  languages: [js]
+  severity: INFO
