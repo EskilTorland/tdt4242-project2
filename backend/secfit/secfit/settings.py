@@ -30,11 +30,6 @@ EMAIL_PORT = 25
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-NOSE_ARGS = [
-    '--with-coverage',
-    '--cover-package=workouts/tests,users/tests',
-]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -163,3 +158,9 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = "users.User"
 
 DEBUG = True
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=workouts,users',
+]
