@@ -21,35 +21,34 @@ function handleClick(disabled){
         elements[4].value = "Edit"
     }
 }
-document.querySelector("#btn-update").addEventListener("click", () => handleClick());
 
 async function fetchProfile(request) {
     let currentUser = await getCurrentUser();
     console.log(currentUser);
-
+    
     if (currentUser != null) {
         let container = document.getElementById('div-content');
         let profileForm = document.querySelector("#template-profile");
         const profileAnchor = profileForm.content.firstElementChild.cloneNode(true);
-
+        
         const formPhone = profileAnchor.querySelector("#form-phone");
         formPhone.value = currentUser.phone_number;
-
+        
         const formCountry = profileAnchor.querySelector("#form-country");
         formCountry.value = currentUser.country;
         
         const formCity = profileAnchor.querySelector("#form-city");
         formCity.value = currentUser.city;
-
+        
         const formAddress = profileAnchor.querySelector("#form-address");
         formAddress.value = currentUser.street_address;
-
+        
         container.appendChild(profileAnchor);
     }
     else{
         alert("Could not fetch profile");
     }
-
+    
     return response;
 }
 
@@ -63,3 +62,5 @@ window.addEventListener("DOMContentLoaded", async () => {
         document.body.prepend(alert);
     }
 });
+
+document.querySelector("#btn-update").addEventListener("click", () => handleClick());
