@@ -6,136 +6,111 @@ import json
 # Create your tests here.
 class IsOwnerTest(TestCase):
   def setUp(self):
-    self.user1 = User.objects.create(username="user1")
-    self.user2 = User.objects.create(username="user2", coach=self.user1)
-    self.factory = RequestFactory()
-    self.is_owner_check = IsOwner()
+    self.user = User.objects.create(username="testuser")
+    self.workout = Workout.objects.create(name="Chest Day", date="2022-03-05T08:00:00Z", notes="Max Day", owner=self.user, visibility="PU")
 
-  def test_is_owner(self):
-    request = self.factory.get('/')
-    request.user = self.user1
-    workout = Workout.objects.create(name="Workout", date="2021-03-05T12:00:00Z", notes="Notes", owner=self.user1, visibility="PU")
+  def test_user_is_owner(self):
+    request = RequestFactory().get('/')
+    request.user = self.user
     
-    permission = self.is_owner_check.has_object_permission(request, None, workout)
-    self.assertTrue(permission)
+    self.assertTrue(IsOwner().has_object_permission(request,None,self.workout))
 
 class IsOwnerOfWorkoutTest(TestCase):
   def setUp(self):
-    self.user1 = User.objects.create(username="user1")
-    self.user2 = User.objects.create(username="user2", coach=self.user1)
-    self.factory = RequestFactory()
-    self.is_owner_of_workout_check = IsOwnerOfWorkout()
-    self.workout = Workout.objects.create(name="Workout", date="2021-03-05T12:00:00Z", notes="Notes", owner=self.user1, visibility="PU")
+    self.user = User.objects.create(username="testuser")
+    self.workout = Workout.objects.create(name="Back Day", date="2022-03-08T08:00:00Z", notes="60% max", owner=self.user, visibility="PU")
 
-  def test_is_owner_of_workout_obj(self):
-    request = self.factory.get('/')
-    request.user = self.user1
-    exercise = Exercise.objects.create(name="Pull-ups", description="Pull-ups", unit="Times")
-    instance = ExerciseInstance.objects.create(workout=self.workout, exercise=exercise, sets=10, number=10)
+  def test_is_user_owner_of_workout(self):
+    request = RequestFactory().get('/')
+    request.user = self.user
+    exercise = Exercise.objects.create(name="Pull-ups", description="Bar to chin", unit="repititions")
+    excercise_instance = ExerciseInstance.objects.create(workout=self.workout, exercise=exercise, sets=3, number=8)
     
-    permission = self.is_owner_of_workout_check.has_object_permission(request, None, instance)
-    self.assertTrue(permission)
+    self.assertTrue(IsOwnerOfWorkout().has_object_permission(request,None,excercise_instance))
 
-  def test_is_owner_of_workout_get(self):
-    request = self.factory.get('/')
-    request.user = self.user1
+  def test_get_is_user_owner_of_workout(self):
+    request = RequestFactory().get('/')
+    request.user = self.user
     request.data = { 'workout' : '/api/workouts/1/'}
     
-    permission = self.is_owner_of_workout_check.has_permission(request, None)
-    self.assertTrue(permission)
+    self.assertTrue(IsOwnerOfWorkout().has_permission(request,None))
 
-  def test_is_owner_of_workout_post(self):
-    request = self.factory.post('/')
-    request.user = self.user1
+  def test_post_is_user_owner_of_workout(self):
+    request = RequestFactory().post('/')
+    request.user = self.user
     request.data = { 'workout' : '/api/workouts/1/'}
-    permission = self.is_owner_of_workout_check.has_permission(request, None)
-    self.assertTrue(permission)
 
-  def test_is_owner_of_workout_post_no_workout(self):
-    request = self.factory.post('/')
-    request.user = self.user1
+    self.assertTrue(IsOwnerOfWorkout().has_permission(request,None))
+
+  def test_is_user_owner_of_workout_post_empty_workout(self):
+    request = RequestFactory().post('/')
+    request.user = self.user
     request.data = { 'workout' : None}
-    permission = self.is_owner_of_workout_check.has_permission(request, None)
-    self.assertFalse(permission)
+    self.assertFalse(IsOwnerOfWorkout().has_permission(request,None))
 
 class IsCoachAndVisibleToCoachTest(TestCase):
   def setUp(self):
-    self.user1 = User.objects.create(username="user1")
-    self.user2 = User.objects.create(username="user2", coach=self.user1)
-    self.factory = RequestFactory()
-    self.is_coach_and_visible_to_coach_check = IsCoachAndVisibleToCoach()
-    self.workout = Workout.objects.create(name="Workout", date="2021-03-05T12:00:00Z", notes="Notes", owner=self.user2, visibility="PU")
+    self.coach = User.objects.create(username="testcoach")
+    self.user = User.objects.create(username="testuser", coach=self.coach)
+    self.workout = Workout.objects.create(name="Leg Day", date="2022-03-08T08:00:00Z", notes="1 rep max", owner=self.user, visibility="PU")
 
-  def test_is_coach_and_visible_to_coach(self):
-    request = self.factory.get('/')
-    request.user = self.user1
+  def test_user_is_coach_and_visible_to_coach(self):
+    request = RequestFactory().get('/')
+    request.user = self.coach
     
-    permission = self.is_coach_and_visible_to_coach_check.has_object_permission(request, None, self.workout)
-    self.assertTrue(permission)
+    self.assertTrue(IsCoachAndVisibleToCoach().has_object_permission(request,None,self.workout))
 
 
 class IsCoachOfWorkoutAndVisibleToCoachTest(TestCase):
   def setUp(self):
-    self.user1 = User.objects.create(username="user1")
-    self.user2 = User.objects.create(username="user2", coach=self.user1)
-    self.factory = RequestFactory()
-    self.is_coach_of_workout_and_visible_to_coach_check = IsCoachOfWorkoutAndVisibleToCoach()
-    self.workout = Workout.objects.create(name="Workout", date="2021-03-05T12:00:00Z", notes="Notes", owner=self.user2, visibility="PU")
-
-  def test_is_coach_of_workout_and_visible_to_coach(self):
-    request = self.factory.get('/')
-    request.user = self.user1
-    exercise = Exercise.objects.create(name="Pull-ups", description="Pull-ups", unit="Times")
-    instance = ExerciseInstance.objects.create(workout=self.workout, exercise=exercise, sets=10, number=10)
+    self.coach = User.objects.create(username="testcoach")
+    self.user = User.objects.create(username="testuser", coach=self.coach)
+    self.workout = Workout.objects.create(name="Leg Day", date="2022-03-08T08:00:00Z", notes="1 rep max", owner=self.user, visibility="PU")
+  def test_is_user_coach_of_workout_and_visible_to_coach(self):
+    request = RequestFactory().get('/')
+    request.user = self.coach
+    exercise = Exercise.objects.create(name="Squats", description="1 rep max", unit="repititions")
+    excercise_instance = ExerciseInstance.objects.create(workout=self.workout, exercise=exercise, sets=1, number=1)
     
-    permission = self.is_coach_of_workout_and_visible_to_coach_check.has_object_permission(request, None, instance)
-    self.assertTrue(permission)
+    self.assertTrue(IsCoachOfWorkoutAndVisibleToCoach().has_object_permission(request,None,excercise_instance))
 
 class IsPublicTest(TestCase):
   def setUp(self):
-    self.user1 = User.objects.create(username="user1")
-    self.user2 = User.objects.create(username="user2", coach=self.user1)
-    self.factory = RequestFactory()
-    self.is_public_check = IsPublic()
-    self.workout = Workout.objects.create(name="Workout", date="2021-03-05T12:00:00Z", notes="Notes", owner=self.user2, visibility="PU")
-
-  def test_is_coach_of_workout_and_visible_to_coach(self):
-    request = self.factory.get('/')
-    request.user = self.user1
+    self.coach = User.objects.create(username="testcoach")
+    self.user = User.objects.create(username="testuser", coach=self.coach)
+    self.workout = Workout.objects.create(name="Leg Day", date="2022-03-08T08:00:00Z", notes="1 rep max", owner=self.user, visibility="PU")
+  def test_is_workout_public(self):
+    request = RequestFactory().get('/')
+    request.user = self.coach
     
-    permission = self.is_public_check.has_object_permission(request, None, self.workout)
-    self.assertTrue(permission)
+    self.assertTrue(IsPublic().has_object_permission(request,None,self.workout))
 
 
 class IsWorkoutPublicTest(TestCase):
   def setUp(self):
-    self.user1 = User.objects.create(username="user1")
-    self.user2 = User.objects.create(username="user2", coach=self.user1)
-    self.factory = RequestFactory()
-    self.is_workout_public_check = IsWorkoutPublic()
-    self.workout = Workout.objects.create(name="Workout", date="2021-03-05T12:00:00Z", notes="Notes", owner=self.user2, visibility="PU")
+    self.coach = User.objects.create(username="testcoach")
+    self.user = User.objects.create(username="testuser", coach=self.coach)
+    self.workout = Workout.objects.create(name="Back Day", date="2022-03-08T08:00:00Z", notes="60% max", owner=self.user, visibility="PU")
 
-  def test_is_coach_of_workout_and_visible_to_coach(self):
-    request = self.factory.get('/')
-    request.user = self.user1
-    exercise = Exercise.objects.create(name="Pull-ups", description="Pull-ups", unit="Times")
-    instance = ExerciseInstance.objects.create(workout=self.workout, exercise=exercise, sets=10, number=10)
+    
 
-    permission = self.is_workout_public_check.has_object_permission(request, None, instance)
-    self.assertTrue(permission)
+  def test_is_excercise_with_workout_public(self):
+    request = RequestFactory().get('/')
+    request.user = self.coach
+    exercise = Exercise.objects.create(name="Pull-ups", description="With added weights", unit="repititions")
+    excercise_instance = ExerciseInstance.objects.create(workout=self.workout, exercise=exercise, sets=5, number=5)
+    
+    self.assertTrue(IsWorkoutPublic().has_object_permission(request,None,excercise_instance))
 
 
 class IsReadOnlyTest(TestCase):
   def setUp(self):
-    self.user1 = User.objects.create(username="user1")
-    self.user2 = User.objects.create(username="user2", coach=self.user1)
-    self.factory = RequestFactory()
-    self.is_read_only_check = IsReadOnly()
-    self.workout = Workout.objects.create(name="Workout", date="2021-03-05T12:00:00Z", notes="Notes", owner=self.user2, visibility="PU")
+    self.coach = User.objects.create(username="testcoach")
+    self.user = User.objects.create(username="testuser", coach=self.coach)
+    self.workout = Workout.objects.create(name="Back Day", date="2022-03-08T08:00:00Z", notes="60% max", owner=self.user, visibility="PU")
 
-  def test_is_coach_of_workout_and_visible_to_coach(self):
-    request = self.factory.get('/')
-    request.user = self.user1
+  def test_is_workout_read_only(self):
+    request = RequestFactory().get('/')
+    request.user = self.coach
 
-    permission = self.is_read_only_check.has_object_permission(request, None, self.workout)
-    self.assertTrue(permission)
+    self.assertTrue(IsReadOnly().has_object_permission(request,None,self.workout))
