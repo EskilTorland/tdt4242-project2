@@ -1,6 +1,6 @@
 var baseUrl = "localhost:9090";
 
-describe('Boundary tests for view/edit exercise page', () => {
+describe('Integration tests for challenge page', () => {
   before(() => {
       // cy.RegisterDummyUser();
     })
