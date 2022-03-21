@@ -21,6 +21,7 @@ function handleClick(disabled){
         elements[4].value = "Edit"
     }
 }
+document.querySelector("#btn-update").addEventListener("click", () => handleClick());
 
 async function fetchProfile(request) {
     let currentUser = await getCurrentUser();
