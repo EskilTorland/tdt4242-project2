@@ -79,7 +79,7 @@ async function retrieveWorkoutImages(id) {
             currentImageFileElement.classList.add('fade-in')
             setTimeout(() => currentImageFileElement.classList.remove('fade-in'), 500);
 
-            //Sets the opacity of the selected image to 0.4
+            //Sets the opacity of the selected image to 0.6
             otherImageFileElements.forEach((imageFileElement) => imageFileElement.style.opacity = 1)
             event.target.style.opacity = selectedOpacity;
         }))
@@ -120,12 +120,6 @@ function handleGoBackToWorkoutClick() {
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
-
     goBackButton = document.querySelector("#btn-back-workout");
     goBackButton.addEventListener('click', handleGoBackToWorkoutClick);
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get('id');
-    const workoutData = await retrieveWorkoutImages(id);   
-
 });
