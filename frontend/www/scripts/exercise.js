@@ -31,12 +31,9 @@ class MuscleGroup {
 }
 
 function handleCancelButtonDuringEdit() {
-    setReadOnly(true, "#form-exercise");
+    
     document.querySelector("select").setAttribute("disabled", "")
-    okButton.className += " hide";
-    deleteButton.className += " hide";
-    cancelButton.className += " hide";
-    editButton.className = editButton.className.replace(" hide", "");
+    hideButtonDuringEdit();
 
     cancelButton.removeEventListener("click", handleCancelButtonDuringEdit);
 
@@ -48,13 +45,7 @@ function handleCancelButtonDuringEdit() {
     if (oldFormData.has("muscleGroup")) form.muscleGroup.value = oldFormData.get("muscleGroup");
     if (oldFormData.has("unit")) form.unit.value = oldFormData.get("unit");
     
-    oldFormData.delete("name");
-    oldFormData.delete("description");
-    oldFormData.delete("duration");
-    oldFormData.delete("calories");
-    oldFormData.delete("muscleGroup");
-    oldFormData.delete("unit");
-
+    deleteOldFormData();
 }
 
 function handleCancelButtonDuringCreate() {
@@ -159,16 +150,22 @@ async function updateExercise(id) {
         return;
     }
     muscleGroupSelector.setAttribute("disabled", "")
-    // duplicate code from handleCancelButtonDuringEdit
-    // you should refactor this
+    hideButtonDuringEdit();
+    
+    cancelButton.removeEventListener("click", handleCancelButtonDuringEdit);
+        
+    deleteOldFormData();
+}
+
+function hideButtonDuringEdit(){
     setReadOnly(true, "#form-exercise");
     okButton.className += " hide";
     deleteButton.className += " hide";
     cancelButton.className += " hide";
     editButton.className = editButton.className.replace(" hide", "");
-    
-    cancelButton.removeEventListener("click", handleCancelButtonDuringEdit);
-        
+}
+
+function deleteOldFormData(){
     oldFormData.delete("name");
     oldFormData.delete("description");
     oldFormData.delete("duration");
