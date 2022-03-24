@@ -189,8 +189,8 @@ window.addEventListener("DOMContentLoaded", async () => {
         await retrieveExercise(exerciseId);
 
         editButton.addEventListener("click", handleEditExerciseButtonClick);
-        deleteButton.addEventListener("click", (async (id) => await deleteExercise(id)).bind(undefined, exerciseId));
-        okButton.addEventListener("click", (async (id) => await updateExercise(id)).bind(undefined, exerciseId));
+        deleteButton.addEventListener("click", (async (id) => deleteExercise(id)).bind(undefined, exerciseId));
+        okButton.addEventListener("click", (async (id) => updateExercise(id)).bind(undefined, exerciseId));
         return;
     } 
     //create
@@ -200,6 +200,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     okButton.className = okButton.className.replace(" hide", "");
     cancelButton.className = cancelButton.className.replace(" hide", "");
 
-    okButton.addEventListener("click", async () => await createExercise());
+    okButton.addEventListener("click", async () => createExercise());
     cancelButton.addEventListener("click", handleCancelButtonDuringCreate);
 });
