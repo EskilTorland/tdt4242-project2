@@ -10,7 +10,7 @@ class MuscleGroup {
         this.validTypes = ["Legs", "Chest", "Back", "Arms", "Abdomen", "Shoulders"]
 
         this.type = this.validTypes.includes(type) ? type : undefined;
-    };
+    }
 
     setMuscleGroupType = (newType) => {
         this.isValidType = false;
@@ -22,8 +22,7 @@ class MuscleGroup {
         else{
             alert("Invalid muscle group!");
         }
-
-    };
+    }
     
     getMuscleGroupType = () => {
         console.log(this.type, "SWIOEFIWEUFH")
