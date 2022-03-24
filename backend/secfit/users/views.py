@@ -1,4 +1,3 @@
-import django
 from rest_framework import mixins, generics
 from workouts.mixins import CreateListModelMixin
 from rest_framework import permissions
@@ -10,15 +9,11 @@ from users.serializers import (
     UserGetSerializer,
 )
 from rest_framework.permissions import (
-    AllowAny,
-    IsAdminUser,
-    IsAuthenticated,
-    IsAuthenticatedOrReadOnly,
+    IsAuthenticatedOrReadOnly
 )
 from users.models import Offer, AthleteFile
 from django.contrib.auth import get_user_model
 from django.db.models import Q
-from django.shortcuts import get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
 from users.permissions import IsCurrentUser, IsAthlete, IsCoach
 from workouts.permissions import IsOwner, IsReadOnly
@@ -37,15 +32,15 @@ class UserList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
         return self.create(request, *args, **kwargs)
 
     def get_queryset(self):
-        qs = get_user_model().objects.all()
+        query_set = get_user_model().objects.all()
 
         if self.request.user:
             # Return the currently logged in user
             status = self.request.query_params.get("user", None)
             if status and status == "current":
-                qs = get_user_model().objects.filter(pk=self.request.user.pk)
+                query_set = get_user_model().objects.filter(pk=self.request.user.pk)
 
-        return qs
+        return query_set
 
 
 class UserDetail(
@@ -98,33 +93,33 @@ class OfferList(
         serializer.save(owner=self.request.user)
 
     def get_queryset(self):
-        qs = Offer.objects.none()
+        query_set = None
         result = Offer.objects.none()
 
         if self.request.user:
-            qs = Offer.objects.filter(
+            query_set = Offer.objects.filter(
                 Q(owner=self.request.user) | Q(recipient=self.request.user)
             ).distinct()
-            qp = self.request.query_params
-            u = self.request.user
+            query_params = self.request.query_params
+            user = self.request.user
 
             # filtering by status (if provided)
-            s = qp.get("status", None)
-            if s is not None and self.request is not None:
-                qs = qs.filter(status=s)
-                if qp.get("status", None) is None:
-                    qs = Offer.objects.filter(Q(owner=u)).distinct()
+            status = query_params.get("status", None)
+            if status is not None and self.request is not None:
+                query_set = query_set.filter(status=status)
+                if query_params.get("status", None) is None:
+                    query_set = Offer.objects.filter(Q(owner=user)).distinct()
 
             # filtering by category (sent or received)
-            c = qp.get("category", None)
-            if c is not None and qp is not None:
-                if c == "sent":
-                    qs = qs.filter(owner=u)
-                elif c == "received":
-                    qs = qs.filter(recipient=u)
-            return qs
-        else:
-            return result
+            category = query_params.get("category", None)
+            if category is not None and query_params is not None:
+                if category == "sent":
+                    query_set = query_set.filter(owner=user)
+                elif category == "received":
+                    query_set = query_set.filter(recipient=user)
+            return query_set
+
+        return result
 
 
 class OfferDetail(
@@ -171,14 +166,14 @@ class AthleteFileList(
         serializer.save(owner=self.request.user)
 
     def get_queryset(self):
-        qs = AthleteFile.objects.none()
+        query_set = AthleteFile.objects.none()
 
         if self.request.user:
-            qs = AthleteFile.objects.filter(
+            query_set = AthleteFile.objects.filter(
                 Q(athlete=self.request.user) | Q(owner=self.request.user)
             ).distinct()
 
-        return qs
+        return query_set
 
 
 class AthleteFileDetail(
