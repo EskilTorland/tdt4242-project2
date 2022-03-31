@@ -1,6 +1,14 @@
 from rest_framework import mixins, generics
-from workouts.mixins import CreateListModelMixin
 from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.parsers import MultiPartParser, FormParser
+
+from django.contrib.auth import get_user_model
+from django.db.models import Q
+from workouts.mixins import CreateListModelMixin
+from workouts.permissions import IsOwner, IsReadOnly
+from users.models import Offer, AthleteFile
+from users.permissions import IsCurrentUser, IsAthlete, IsCoach
 from users.serializers import (
     UserSerializer,
     OfferSerializer,
@@ -8,15 +16,6 @@ from users.serializers import (
     UserPutSerializer,
     UserGetSerializer,
 )
-from rest_framework.permissions import (
-    IsAuthenticatedOrReadOnly
-)
-from users.models import Offer, AthleteFile
-from django.contrib.auth import get_user_model
-from django.db.models import Q
-from rest_framework.parsers import MultiPartParser, FormParser
-from users.permissions import IsCurrentUser, IsAthlete, IsCoach
-from workouts.permissions import IsOwner, IsReadOnly
 
 # Create your views here.
 class UserList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
