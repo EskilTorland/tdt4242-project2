@@ -124,9 +124,9 @@ async function handleDeleteImgClick (id, http_keyword, fail_alert_text, host_var
         const data = await response.json();
         const alert = createAlert(fail_alert_text, data);
         document.body.prepend(alert);
-    } else {
-        location.reload();
+        return; 
     }
+    location.reload();
 }
 
 function handleGoBackToWorkoutClick() {
