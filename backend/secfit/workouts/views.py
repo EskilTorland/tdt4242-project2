@@ -9,8 +9,8 @@ from rest_framework.parsers import (
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from django.db.models import Q
 from rest_framework import filters
+from django.db.models import Q
 from workouts.parsers import MultipartJsonParser
 from workouts.permissions import (
     IsOwner,
@@ -28,8 +28,6 @@ from workouts.serializers import RememberMeSerializer
 from workouts.serializers import ExerciseInstanceSerializer, WorkoutFileSerializer
 from django.core.exceptions import PermissionDenied
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.response import Response
-import json
 from collections import namedtuple
 import base64, pickle
 from django.core.signing import Signer
@@ -67,14 +65,13 @@ class RememberMe(
     def get(self, request):
         if request.user.is_authenticated == False:
             raise PermissionDenied
-        else:
-            return Response({"remember_me": self.rememberme()})
+        return Response({"remember_me": self.rememberme()})
 
     def post(self, request):
-        cookieObject = namedtuple("Cookies", request.COOKIES.keys())(
+        cookie_object = namedtuple("Cookies", request.COOKIES.keys())(
             *request.COOKIES.values()
         )
-        user = self.get_user(cookieObject)
+        user = self.get_user(cookie_object)
         refresh = RefreshToken.for_user(user)
         return Response(
             {
@@ -83,8 +80,8 @@ class RememberMe(
             }
         )
 
-    def get_user(self, cookieObject):
-        decode = base64.b64decode(cookieObject.remember_me)
+    def get_user(self, cookie_object):
+        decode = base64.b64decode(cookie_object.remember_me)
         user, sign = pickle.loads(decode)
 
         # Validate signature
@@ -131,18 +128,18 @@ class WorkoutList(
         serializer.save(owner=self.request.user)
 
     def get_queryset(self):
-        qs = Workout.objects.none()
+        query_set = Workout.objects.none()
         if self.request.user:
             # A workout should be visible to the requesting user if any of the following hold:
             # - The workout has public visibility
             # - The owner of the workout is the requesting user
             # - The workout has coach visibility and the requesting user is the owner's coach
-            qs = Workout.objects.filter(
+            query_set = Workout.objects.filter(
                 Q(visibility="PU")
                 | (Q(visibility="CO") & Q(owner__coach=self.request.user))
             ).distinct()
 
-        return qs
+        return query_set
 
 
 class WorkoutDetail(
@@ -156,7 +153,7 @@ class WorkoutDetail(
     HTTP methods: GET, PUT, DELETE
     """
 
-    queryset = Workout.objects.all()
+    query_set = Workout.objects.all()
     serializer_class = WorkoutSerializer
     permission_classes = [
         permissions.IsAuthenticated
@@ -240,17 +237,17 @@ class ExerciseInstanceList(
         return self.create(request, *args, **kwargs)
 
     def get_queryset(self):
-        qs = ExerciseInstance.objects.none()
+        query_set = ExerciseInstance.objects.none()
         if self.request.user:
-            qs = ExerciseInstance.objects.filter(
-                Q(workout__owner=self.request.user)
-                | (
+            query_set = ExerciseInstance.objects.filter(
+                Q(workout__owner=self.request.user)| 
+                (
                     (Q(workout__visibility="CO") | Q(workout__visibility="PU"))
                     & Q(workout__owner__coach=self.request.user)
                 )
             ).distinct()
 
-        return qs
+        return query_set
 
 
 class ExerciseInstanceDetail(
@@ -288,7 +285,7 @@ class WorkoutFileList(
     generics.GenericAPIView,
 ):
 
-    queryset = WorkoutFile.objects.all()
+    query_set = WorkoutFile.objects.all()
     serializer_class = WorkoutFileSerializer
     permission_classes = [permissions.IsAuthenticated & IsOwnerOfWorkout]
     parser_classes = [MultipartJsonParser, JSONParser]
@@ -303,9 +300,9 @@ class WorkoutFileList(
         serializer.save(owner=self.request.user)
 
     def get_queryset(self):
-        qs = WorkoutFile.objects.none()
+        query_set = WorkoutFile.objects.none()
         if self.request.user:
-            qs = WorkoutFile.objects.filter(
+            query_set = WorkoutFile.objects.filter(
                 Q(owner=self.request.user)
                 | Q(workout__owner=self.request.user)
                 | (
@@ -314,7 +311,7 @@ class WorkoutFileList(
                 )
             ).distinct()
 
-        return qs
+        return query_set
 
 
 class WorkoutFileDetail(
@@ -324,14 +321,17 @@ class WorkoutFileDetail(
     generics.GenericAPIView,
 ):
 
-    queryset = WorkoutFile.objects.all()
+    query_set = WorkoutFile.objects.all()
     serializer_class = WorkoutFileSerializer
     permission_classes = [
-        permissions.IsAuthenticated
-        & (
-            IsOwner
-            | IsOwnerOfWorkout
-            | (IsReadOnly & (IsCoachOfWorkoutAndVisibleToCoach | IsWorkoutPublic))
+        permissions.IsAuthenticated& 
+        (
+            IsOwner | 
+            IsOwnerOfWorkout | 
+            (IsReadOnly & 
+            (IsCoachOfWorkoutAndVisibleToCoach | 
+            IsWorkoutPublic)
+            )
         )
     ]
 
