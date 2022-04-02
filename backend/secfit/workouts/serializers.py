@@ -132,10 +132,16 @@ class WorkoutSerializer(serializers.HyperlinkedModelSerializer):
         instance.save()
 
         # Handle ExerciseInstances
-
+        self.handle_excercise_instance(exercise_instances, exercise_instances_data, instance)
         # This updates existing exercise instances without adding or deleting object.
         # zip() will yield n 2-tuples, where n is
         # min(len(exercise_instance), len(exercise_instance_data))
+     
+        # Handle WorkoutFiles
+        self.handle_workout_files(validated_data,instance)
+        return instance
+
+    def handle_excercise_instance(self, exercise_instances, exercise_instances_data, instance):
         for exercise_instance, exercise_instance_data in zip(
             exercise_instances.all(), exercise_instances_data
         ):
@@ -162,8 +168,7 @@ class WorkoutSerializer(serializers.HyperlinkedModelSerializer):
             for i in range(len(exercise_instances_data), len(exercise_instances.all())):
                 exercise_instances.all()[i].delete()
 
-        # Handle WorkoutFiles
-
+    def handle_workout_files(self, validated_data, instance):
         if "files" in validated_data:
             files_data = validated_data.pop("files")
             files = instance.files
@@ -183,8 +188,6 @@ class WorkoutSerializer(serializers.HyperlinkedModelSerializer):
             elif len(files_data) < len(files.all()):
                 for i in range(len(files_data), len(files.all())):
                     files.all()[i].delete()
-
-        return instance
 
     def get_owner_username(self, obj):
         """Returns the owning user's username
@@ -213,7 +216,16 @@ class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Exercise
-        fields = ["url", "id", "name", "description", "duration", "calories", "muscleGroup", "unit", "instances"]
+        fields = [
+            "url",
+            "id",
+            "name",
+            "description",
+            "duration",
+            "calories",
+            "muscleGroup",
+            "unit",
+            "instances"]
 
 
 class RememberMeSerializer(serializers.HyperlinkedModelSerializer):
