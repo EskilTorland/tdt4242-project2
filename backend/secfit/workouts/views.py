@@ -240,8 +240,8 @@ class ExerciseInstanceList(
         query_set = ExerciseInstance.objects.none()
         if self.request.user:
             query_set = ExerciseInstance.objects.filter(
-                Q(workout__owner=self.request.user)
-                | (
+                Q(workout__owner=self.request.user)| 
+                (
                     (Q(workout__visibility="CO") | Q(workout__visibility="PU"))
                     & Q(workout__owner__coach=self.request.user)
                 )
@@ -324,11 +324,14 @@ class WorkoutFileDetail(
     query_set = WorkoutFile.objects.all()
     serializer_class = WorkoutFileSerializer
     permission_classes = [
-        permissions.IsAuthenticated
-        & (
-            IsOwner
-            | IsOwnerOfWorkout
-            | (IsReadOnly & (IsCoachOfWorkoutAndVisibleToCoach | IsWorkoutPublic))
+        permissions.IsAuthenticated& 
+        (
+            IsOwner | 
+            IsOwnerOfWorkout | 
+            (IsReadOnly & 
+            (IsCoachOfWorkoutAndVisibleToCoach | 
+            IsWorkoutPublic)
+            )
         )
     ]
 
