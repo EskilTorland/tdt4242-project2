@@ -1,18 +1,16 @@
-from django.shortcuts import render
 from rest_framework import generics, mixins
-from comments.models import Comment, Like
 from rest_framework import permissions
-from comments.permissions import IsCommentVisibleToUser
-from workouts.permissions import IsOwner, IsReadOnly
-from comments.serializers import CommentSerializer, LikeSerializer
-from django.db.models import Q
 from rest_framework.filters import OrderingFilter
+from django.db.models import Q
+from comments.permissions import IsCommentVisibleToUser
+from comments.models import Comment, Like
+from comments.serializers import CommentSerializer, LikeSerializer
+from workouts.permissions import IsOwner, IsReadOnly
 
 # Create your views here.
 class CommentList(
     mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
 ):
-    # queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [OrderingFilter]
@@ -29,10 +27,10 @@ class CommentList(
 
     def get_queryset(self):
         workout_pk = self.kwargs.get("pk")
-        qs = Comment.objects.none()
+        query_set = Comment.objects.none()
 
         if workout_pk:
-            qs = Comment.objects.filter(workout=workout_pk)
+            query_set = Comment.objects.filter(workout=workout_pk)
         elif self.request.user:
             """A comment should be visible to the requesting user if any of the following hold:
             - The comment is on a public visibility workout
@@ -40,11 +38,8 @@ class CommentList(
             - The comment is on a coach visibility workout and the user is the workout owner's coach
             - The comment is on a workout owned by the user
             """
-            # The code below is kind of duplicate of the one in ./permissions.py
-            # We should replace it with a better solution.
-            # Or maybe not.
             
-            qs = Comment.objects.filter(
+            query_set = Comment.objects.filter(
                 Q(workout__visibility="PU")
                 | Q(owner=self.request.user)
                 | (
@@ -54,7 +49,7 @@ class CommentList(
                 | Q(workout__owner=self.request.user)
             ).distinct()
 
-        return qs
+        return query_set
 
 # Details of comment
 class CommentDetail(
